@@ -15,13 +15,21 @@
 #***************************************************************************#
 
 #----------------------------------------------------------------------------#
+#      Global constants, global variables, set options, etc                  #
+#----------------------------------------------------------------------------#
+set -e
+INPUT_FILE="site-list.txt"
+
+
+
+#----------------------------------------------------------------------------#
 #      read_input_file()                                                     #
 #                                                                            #
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-function read_input_file(){
-    for i in $(cat site-list.txt);
+read_input_file(){
+    for i in $(cat $INPUT_FILE);
     do
         url=$i
         echo $url
@@ -36,7 +44,7 @@ function read_input_file(){
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-function check_expiring_date_for_certificates() {
+check_expiring_date_for_certificates() {
     echo 'this method takes in an array as parameter and returns a string which is the body of the email'
     echo 'In here we should use openssl to build this information and use a function to calculate how many days'
 }
@@ -47,7 +55,7 @@ function check_expiring_date_for_certificates() {
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-function calculate_days_left(){
+calculate_days_left(){
     echo 'this method should calculate how many days are left for one certificate to expire'
 }
 
@@ -57,7 +65,7 @@ function calculate_days_left(){
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-function send_email_to_group_target() {
+send_email_to_group_target() {
     echo 'This method should use the smtp server to send an email to the target group'
     echo 'The message that will be sent is received from the method check_expiring_date_for_certificates'
 }
