@@ -63,9 +63,13 @@ help_message() {
     echo "    -d [days]: The number of days used as a threshold"
     echo ""
     echo ""
-    echo "Ex 1: sh certificate-monitor.sh -f myfile.txt -d 10" 
-    echo "Ex 2: sh certificate-monitor.sh -f myfile.txt -d 20" 
-    echo "Ex 3: sh certificate-monitor.sh -f myfile.txt -d 30" 
+    echo "How to run the script: "
+    echo "    sh certificate-monitor.sh -f <filename> -d <limitAcceptedDays>"
+    echo "Exs:"
+    echo "    sh certificate-monitor.sh -f myfile.txt -d 10" 
+    echo "    sh certificate-monitor.sh -f myURLs.txt -d 20" 
+    echo "    sh certificate-monitor.sh -f urls.txt -d 30" 
+    exit 0
 }
 
 #----------------------------------------------------------------------------#
