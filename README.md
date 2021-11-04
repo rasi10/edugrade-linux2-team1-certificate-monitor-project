@@ -31,7 +31,8 @@ curl
 
 ## How to run the project in your terminal:
 ```
-Firstly, make sure to have a text file with a list of URLs. For instance, you can create a file called 'myURLs.txt' with the folowing content:
+Make sure to have a text file with a list of URLs. You can create, for instance, 
+a file named 'myURLs.txt' with the folowing content:
 ______________
 |myURLs.txt   |
 ---------------
