@@ -60,12 +60,12 @@ calculate_days_left(){
 }
 
 #----------------------------------------------------------------------------#
-#      send_email_to_group_target()                                          #
+#      send_email_to_target_group()                                          #
 #                                                                            #
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-send_email_to_group_target() {
+send_email_to_target_group() {
     echo 'This method should use the smtp server to send an email to the target group'
     echo 'The message that will be sent is received from the method check_expiring_date_for_certificates'
 }
