@@ -31,8 +31,24 @@ curl
 
 ## How to run the project in your terminal:
 ```
-chmod 770 certificate-monitor.sh
-sh certificate-monitor.sh
+Firstly, make sure to have a text file with a list of URLs. For instance, you can create a file called 'myURLs.txt' with the folowing content:
+______________
+|myURLs.txt   |
+---------------
+|edugrade.se  |
+|wikipedia.com|
+|google.com   |
+|_____________|
+
+Making the script executable & mandatory flags:
+'chmod 770 certificate-monitor.sh'
+'sh certificate-monitor.sh -f <filename> -d <limitAcceptedDays>'
+
+Example with mandatory flags:
+Ex: 'sh certificate-monitor.sh -f myURLs.txt -d 10'
+
+Getting help:
+'sh certificate-monitor -h'
 ```
 
 ## How to run the project with docker:
