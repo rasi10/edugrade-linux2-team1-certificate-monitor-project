@@ -21,9 +21,11 @@ set -e
 
 NO_ARGS=0
 E_OPTERROR=85
+E_NORMERROR=0
 
 unset INPUT_FILE
 unset DAYS
+unset TARGET_GROUP
 
 #----------------------------------------------------------------------------#
 #      normal_usage()                                                        #
@@ -32,12 +34,13 @@ unset DAYS
 #                                                                            #
 #----------------------------------------------------------------------------#
 normal_usage() {
-    echo "Usage: sh certificate-monitor.sh [-f] [-d]" 
+    echo "Usage: sh certificate-monitor.sh [-t][-d][-f]" 
+    echo "    -t [target_email]: The target email (or target group email / alias)"    
+    echo "    -d [days_threshold]: The number of days used as a threshold"
     echo "    -f [filename]: The name of the file that contains the list of URLs"
-    echo "    -d [days]: The number of days used as a threshold"
     echo ""
     echo "Run 'sh certificate-monitor.sh -h' for help" 
-
+    exit $E_NORMERROR
 }
 
 #----------------------------------------------------------------------------#
@@ -46,8 +49,10 @@ normal_usage() {
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
+
 wrong_parameters() {
-    echo "Invalid flag/parameter: $1" 
+    echo "Invalid flag(s)/parameter(s)!"
+    echo ""
     echo "Run 'sh certificate-monitor.sh -h' for help" 
 }
 
@@ -58,18 +63,19 @@ wrong_parameters() {
 #                                                                            #
 #----------------------------------------------------------------------------#
 help_message() {    
-    echo "Usage: sh certificate-monitor.sh [-f] [-d]" 
+    echo "Usage: sh certificate-monitor.sh [-t][-d][-f]" 
+    echo "    -t [target_email]: The target email (or target group email / alias)"    
+    echo "    -d [days_threshold]: The number of days used as a threshold"
     echo "    -f [filename]: The name of the file that contains the list of URLs"
-    echo "    -d [days]: The number of days used as a threshold"
-    echo ""
-    echo ""
+    echo ""    
     echo "How to run the script: "
-    echo "    sh certificate-monitor.sh -f <filename> -d <limitAcceptedDays>"
+    echo "    sh certificate-monitor.sh  -t <target_email> -d <days_threshold> -f <filename>"
+    echo ""
     echo "Exs:"
-    echo "    sh certificate-monitor.sh -f myfile.txt -d 10" 
-    echo "    sh certificate-monitor.sh -f myURLs.txt -d 20" 
-    echo "    sh certificate-monitor.sh -f urls.txt -d 30" 
-    exit 0
+    echo "    sh certificate-monitor.sh -t example@email.com -d 10 -f myfile.txt" 
+    echo "    sh certificate-monitor.sh -t aliasTarget@email.com -d 20 -f myURLs.txt" 
+    echo "    sh certificate-monitor.sh -t targetGroupt@email.com -d 30 -f urls.txt" 
+    exit $E_NORMERROR
 }
 
 #----------------------------------------------------------------------------#
@@ -116,8 +122,12 @@ calculate_days_left(){
 #                                                                            #
 #----------------------------------------------------------------------------#
 send_email_to_target_group() {
-    echo 'This method should use the smtp server to send an email to the target group'
-    echo 'The message that will be sent is received from the method check_expiring_date_for_certificates'
+    # Example of sending an email if your smtp server is setup
+    # echo -e 'Subject: test\n\nTesting ssmtp' | sendmail -v rasilva.1986@gmail.com    
+    echo -e 'Subject: Certificate Alert\n\n'$1  | sendmail -v $TARGET_GROUP
+
+    #echo 'This method should use the smtp server to send an email to the target group'
+    #echo 'The message that will be sent is received from the method check_expiring_date_for_certificates'
 }
 
 
@@ -135,16 +145,20 @@ then
 fi
 
 # In case of -f -d -h and wrong flags
-while getopts ":f:d:h" flag; do
+while getopts ":t:d:f:h" flag; do
     case "${flag}" in 
-        f) INPUT_FILE=${OPTARG};; 
+        t) TARGET_GROUP=${OPTARG};; 
         d) DAYS=${OPTARG};;
+        f) INPUT_FILE=${OPTARG};;
         h) help_message;;
         \?)
             wrong_parameters ${OPTARG}
-            exit 0       
+            exit $E_NORMERROR   
     esac    
 done
 
 # Invoking the method to read the file that was passed as an argument
 read_input_file
+# Invoking the method to send the email with a parameter
+# send_email_to_target_group "Hello! This is a nice test"
+exit $E_NORMERROR
