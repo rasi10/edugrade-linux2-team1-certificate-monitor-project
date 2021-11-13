@@ -108,7 +108,7 @@ check_expiring_date_for_certificates() {
     expiration_date=$(date -d "$expiration_string" +%s)
     days_left="$(calculate_days_left)"
     if [ $days_left -ge $DAYS ]; then
-        email_body+="Certificate for $1 expires in more the $DAYS days${NEW_LINE}"        
+        email_body+="Certificate for $1 expires in more than $DAYS days${NEW_LINE}"        
     else        
         email_body+="Time to renew certificate for $1! Right now it is less than $DAYS days for it to expire${NEW_LINE}"        
     fi

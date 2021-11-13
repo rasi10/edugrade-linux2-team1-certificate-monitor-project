@@ -32,7 +32,7 @@ curl
 
 ## _Configuring a SMTP server on your machine with a office365 account_
 - Install the required packages.
-- Read the content of the files **Revaliases** and **ssmtp.config**, edit them and save them under **/etc/ssmtp**
+- Read the content of the files **Revaliases** and **ssmtp.config**, edit them and save them under **/etc/ssmtp/**
 
 ## _How to run the project in your terminal_
 Make sure to have a text file with a list of URLs. You can create, for instance, a file named "myURLs.txt" with the folowing content:
