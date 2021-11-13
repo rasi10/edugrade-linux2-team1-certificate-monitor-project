@@ -23,6 +23,8 @@ NO_ARGS=0
 E_OPTERROR=85
 E_NORMERROR=0
 
+TODAY=$(date +%s)
+
 unset INPUT_FILE
 unset DAYS
 unset TARGET_GROUP
@@ -85,14 +87,10 @@ help_message() {
 #                                                                            #
 #----------------------------------------------------------------------------#
 read_input_file(){
-    for i in $(cat $INPUT_FILE);
-    do
-        url=$i
-        echo $url
+    while read url; do
+        check_expiring_date_for_certificates $url
     done    
-
-    echo 'This method should return an array with the values stored in the file'
-}
+} < $INPUT_FILE
 
 #----------------------------------------------------------------------------#
 #      check_expiring_date_for_certificates()                                #
@@ -101,8 +99,16 @@ read_input_file(){
 #                                                                            #
 #----------------------------------------------------------------------------#
 check_expiring_date_for_certificates() {
-    echo 'this method takes in an array as parameter and returns a string which is the body of the email'
-    echo 'In here we should use openssl to build this information and use a function to calculate how many days'
+    # echo 'this method takes in an array as parameter and returns a string which is the body of the email'
+    # echo 'In here we should use openssl to build this information and use a function to calculate how many days'
+    expiration_string=$(echo | openssl s_client -servername $1 -connect $1:443 2>/dev/null | openssl x509 -noout -enddate | cut -f2 -d=)
+    expiration_date=$(date -d "$expiration_string" +%s)
+    days_left="$(calculate_days_left)"
+    if [ $days_left -ge $DAYS ]; then
+        echo "Certificate for $1 expires in more the $DAYS days."
+    else
+        echo "Hurry up to renew certificate for $1"
+    fi
 }
 
 #----------------------------------------------------------------------------#
@@ -112,7 +118,9 @@ check_expiring_date_for_certificates() {
 #                                                                            #
 #----------------------------------------------------------------------------#
 calculate_days_left(){
-    echo 'this method should calculate how many days are left for one certificate to expire'
+    # echo 'this method should calculate how many days are left for one certificate to expire'
+    days_left=$(( ($expiration_date-$TODAY)/(24*60*60) ))
+    echo "$days_left"
 }
 
 #----------------------------------------------------------------------------#
@@ -156,6 +164,9 @@ while getopts ":t:d:f:h" flag; do
             exit $E_NORMERROR   
     esac    
 done
+
+# If days is not set with a command line argument, set a default value
+DAYS=${DAYS-10}
 
 # Invoking the method to read the file that was passed as an argument
 read_input_file
