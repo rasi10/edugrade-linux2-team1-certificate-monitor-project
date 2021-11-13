@@ -3,7 +3,7 @@
 #   THIS FILE SHOULD BE PLACED UNDER /etc/ssmtp/                                                    #
 #                                                                                                   #
 # Change the following string(s):                                                                   #
-# -> 'YOUR-LINUX-USER'                                                                              #                           
+# -> 'YOUR-LINUX-USER'                                                                              #
 #     (Change it to: Your linux user)                                                               #
 #                                                                                                   #
 # -> 'YOUR-OFFICE365-EMAIL-ADDRESS'                                                                 #
@@ -17,4 +17,3 @@
 # Example: root:your_login@your.domain:mailhub.your.domain[:port]
 # where [:port] is an optional port number that defaults to 25.
 YOUR-LINUX-USER:YOUR-OFFICE365-EMAIL-ADDRESS:smtp.office365.com:587            #Change it to your own linux user and your own email address
-

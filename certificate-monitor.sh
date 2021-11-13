@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#***************************************************************************#   
+#***************************************************************************#
 #                       certificate-monitor.sh                              #
-#                                                                           #       
+#                                                                           #
 #                      Edugrade - Linux 2 - Team 1                          #
 #                            Adil Riaz                                      #
 #                           Ahmed Aaden                                     #
@@ -14,20 +14,24 @@
 #                       November 3rd, 2021                                  #
 #***************************************************************************#
 
-#----------------------------------------------------------------------------#
-#      Global constants, global variables, set options, etc                  #
-#----------------------------------------------------------------------------#
+#---------------------------------------------------------------------------#
+#      Global constants, global variables, set options, etc                 #
+#---------------------------------------------------------------------------#
 set -e
 
 NO_ARGS=0
 E_OPTERROR=85
 E_NORMERROR=0
 TODAY=$(date +%s)
+NEW_LINE=$'\n'
+EMAIL_SENDER="CERTIFICATE-ALERT"
+EMAIL_SUBJECT="Certificate alert"
 
+email_body=""
 unset INPUT_FILE
 unset DAYS
 unset TARGET_GROUP
-email_body=""
+
 
 #----------------------------------------------------------------------------#
 #      normal_usage()                                                        #
@@ -36,12 +40,12 @@ email_body=""
 #                                                                            #
 #----------------------------------------------------------------------------#
 normal_usage() {
-    echo "Usage: sh certificate-monitor.sh [-t][-d][-f]" 
-    echo "    -t [target_email]: The target email (or target group email / alias)"    
+    echo "Usage: sh certificate-monitor.sh [-t][-d][-f]"
+    echo "    -t [target_email]: The target email (or target group email / alias)"
     echo "    -d [days_threshold]: The number of days used as a threshold"
     echo "    -f [filename]: The name of the file that contains the list of URLs"
     echo ""
-    echo "Run 'sh certificate-monitor.sh -h' for help" 
+    echo "Run 'sh certificate-monitor.sh -h' for help"
     exit $E_NORMERROR
 }
 
@@ -55,7 +59,7 @@ normal_usage() {
 wrong_parameters() {
     echo "Invalid flag(s)/parameter(s)!"
     echo ""
-    echo "Run 'sh certificate-monitor.sh -h' for help" 
+    echo "Run 'sh certificate-monitor.sh -h' for help"
 }
 
 #----------------------------------------------------------------------------#
@@ -66,17 +70,17 @@ wrong_parameters() {
 #----------------------------------------------------------------------------#
 help_message() {    
     echo "Usage: sh certificate-monitor.sh [-t][-d][-f]" 
-    echo "    -t [target_email]: The target email (or target group email / alias)"    
+    echo "    -t [target_email]: The target email (or target group email / alias)"
     echo "    -d [days_threshold]: The number of days used as a threshold"
     echo "    -f [filename]: The name of the file that contains the list of URLs"
-    echo ""    
+    echo ""
     echo "How to run the script: "
     echo "    sh certificate-monitor.sh  -t <target_email> -d <days_threshold> -f <filename>"
     echo ""
     echo "Exs:"
-    echo "    sh certificate-monitor.sh -t example@email.com -d 10 -f myfile.txt" 
-    echo "    sh certificate-monitor.sh -t aliasTarget@email.com -d 20 -f myURLs.txt" 
-    echo "    sh certificate-monitor.sh -t targetGroupt@email.com -d 30 -f urls.txt" 
+    echo "    sh certificate-monitor.sh -t example@email.com -d 10 -f myfile.txt"
+    echo "    sh certificate-monitor.sh -t aliasTarget@email.com -d 20 -f myURLs.txt"
+    echo "    sh certificate-monitor.sh -t targetGroupt@email.com -d 30 -f urls.txt"
     exit $E_NORMERROR
 }
 
@@ -87,11 +91,10 @@ help_message() {
 #                                                                            #
 #----------------------------------------------------------------------------#
 read_input_file(){
-    for i in $(cat $INPUT_FILE);
-    do
+    for i in $(cat $INPUT_FILE);do
         url=$i        
         check_expiring_date_for_certificates $url
-    done       
+    done
 }
 
 #----------------------------------------------------------------------------#
@@ -105,12 +108,9 @@ check_expiring_date_for_certificates() {
     expiration_date=$(date -d "$expiration_string" +%s)
     days_left="$(calculate_days_left)"
     if [ $days_left -ge $DAYS ]; then
-        #echo "Certificate for $1 expires in more the $DAYS days."
-        email_body+="Certificate for $1 expires in more the $DAYS days #%&"
-        
-    else
-        #echo "Hurry up to renew certificate for $1"
-        email_body+="Hurry up to renew certificate for $1 #%&"                
+        email_body+="Certificate for $1 expires in more the $DAYS days${NEW_LINE}"        
+    else        
+        email_body+="Time to renew certificate for $1! Right now it is less than $DAYS days for it to expire${NEW_LINE}"        
     fi
 }
 
@@ -120,8 +120,7 @@ check_expiring_date_for_certificates() {
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-calculate_days_left(){
-    # echo 'this method should calculate how many days are left for one certificate to expire'
+calculate_days_left(){    
     days_left=$(( ($expiration_date-$TODAY)/(24*60*60) ))
     echo "$days_left"
 }
@@ -133,35 +132,26 @@ calculate_days_left(){
 #                                                                            #
 #----------------------------------------------------------------------------#
 send_email_to_target_group() {
-    # Example of sending an email if your smtp server is setup
-    echo "Sending report email to target group..."
-    # echo -e 'Subject: test\n\nTesting ssmtp' | sendmail -v rasilva.1986@gmail.com    
-    echo -e 'Subject: Certificate Alert\n\n'$1  | sendmail -v $TARGET_GROUP
-    
-    #echo -e 'Subject: Certificate Alert\n\n'$email_body  | sendmail -v $TARGET_GROUP
-
-    #echo 'This method should use the smtp server to send an email to the target group'
-    #echo 'The message that will be sent is received from the method check_expiring_date_for_certificates'
+    echo "Sending report email to target group..."    
+    echo -e 'Subject:'"$EMAIL_SUBJECT"'\n\n'"$1"  | sendmail -v $TARGET_GROUP -F $EMAIL_SENDER
 }
-
 
 #----------------------------------------------------------------------------#
 #      MAIN - In here we invoke the defined methods in a logical order       #
 #----------------------------------------------------------------------------#
 
-
 # Processing the flags passed to the program
 # In case of no arguments
 if [ $# -eq "$NO_ARGS" ]
 then
-    normal_usage    
+    normal_usage
     exit $E_OPTERROR
 fi
 
 # In case of -f -d -h and wrong flags
 while getopts ":t:d:f:h" flag; do
     case "${flag}" in 
-        t) TARGET_GROUP=${OPTARG};; 
+        t) TARGET_GROUP=${OPTARG};;
         d) DAYS=${OPTARG};;
         f) INPUT_FILE=${OPTARG};;
         h) help_message;;
@@ -171,14 +161,9 @@ while getopts ":t:d:f:h" flag; do
     esac    
 done
 
-# If days is not set with a command line argument, set a default value
-DAYS=${DAYS-10}
-
-# Invoking the method to read the file that was passed as an argument
+# Invoking the method to read the file that is passed as an argument
 read_input_file
-echo $email_body | tr "#%&" "\n"
-# Invoking the method to send the email with a parameter
-# send_email_to_target_group "Hello! This is a nice test"
-# send_email_to_target_group $email_body
-# send_email_to_target_group "Hello"
+# Invoking the method to send the email with the result
+send_email_to_target_group "$email_body"
+# Exiting the program
 exit $E_NORMERROR
