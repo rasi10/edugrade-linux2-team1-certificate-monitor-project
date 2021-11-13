@@ -22,10 +22,12 @@ set -e
 NO_ARGS=0
 E_OPTERROR=85
 E_NORMERROR=0
+TODAY=$(date +%s)
 
 unset INPUT_FILE
 unset DAYS
 unset TARGET_GROUP
+email_body=""
 
 #----------------------------------------------------------------------------#
 #      normal_usage()                                                        #
@@ -87,11 +89,9 @@ help_message() {
 read_input_file(){
     for i in $(cat $INPUT_FILE);
     do
-        url=$i
-        echo $url
-    done    
-
-    echo 'This method should return an array with the values stored in the file'
+        url=$i        
+        check_expiring_date_for_certificates $url
+    done       
 }
 
 #----------------------------------------------------------------------------#
@@ -100,9 +100,18 @@ read_input_file(){
 #      TO DO -> ADD COMMENTS LATER                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
-check_expiring_date_for_certificates() {
-    echo 'this method takes in an array as parameter and returns a string which is the body of the email'
-    echo 'In here we should use openssl to build this information and use a function to calculate how many days'
+check_expiring_date_for_certificates() {    
+    expiration_string=$(echo | openssl s_client -servername $1 -connect $1:443 2>/dev/null | openssl x509 -noout -enddate | cut -f2 -d=)
+    expiration_date=$(date -d "$expiration_string" +%s)
+    days_left="$(calculate_days_left)"
+    if [ $days_left -ge $DAYS ]; then
+        #echo "Certificate for $1 expires in more the $DAYS days."
+        email_body+="Certificate for $1 expires in more the $DAYS days #%&"
+        
+    else
+        #echo "Hurry up to renew certificate for $1"
+        email_body+="Hurry up to renew certificate for $1 #%&"                
+    fi
 }
 
 #----------------------------------------------------------------------------#
@@ -112,7 +121,9 @@ check_expiring_date_for_certificates() {
 #                                                                            #
 #----------------------------------------------------------------------------#
 calculate_days_left(){
-    echo 'this method should calculate how many days are left for one certificate to expire'
+    # echo 'this method should calculate how many days are left for one certificate to expire'
+    days_left=$(( ($expiration_date-$TODAY)/(24*60*60) ))
+    echo "$days_left"
 }
 
 #----------------------------------------------------------------------------#
@@ -123,8 +134,11 @@ calculate_days_left(){
 #----------------------------------------------------------------------------#
 send_email_to_target_group() {
     # Example of sending an email if your smtp server is setup
+    echo "Sending report email to target group..."
     # echo -e 'Subject: test\n\nTesting ssmtp' | sendmail -v rasilva.1986@gmail.com    
     echo -e 'Subject: Certificate Alert\n\n'$1  | sendmail -v $TARGET_GROUP
+    
+    #echo -e 'Subject: Certificate Alert\n\n'$email_body  | sendmail -v $TARGET_GROUP
 
     #echo 'This method should use the smtp server to send an email to the target group'
     #echo 'The message that will be sent is received from the method check_expiring_date_for_certificates'
@@ -157,8 +171,14 @@ while getopts ":t:d:f:h" flag; do
     esac    
 done
 
+# If days is not set with a command line argument, set a default value
+DAYS=${DAYS-10}
+
 # Invoking the method to read the file that was passed as an argument
 read_input_file
+echo $email_body | tr "#%&" "\n"
 # Invoking the method to send the email with a parameter
 # send_email_to_target_group "Hello! This is a nice test"
+# send_email_to_target_group $email_body
+# send_email_to_target_group "Hello"
 exit $E_NORMERROR
