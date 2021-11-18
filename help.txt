@@ -1,0 +1,15 @@
+### Package Installation ##
+
+#SSMTP Sendmail Mailx Mailutil MSMTP#
+
+1- The MTA for Ubuntu distribution is SSMTP along with Mailutils.
+
+2- SSMTP has been orphaned in Debian and Cento 8, So the alternate for Debian is to use MSMTP.
+
+3- For Centos 8 Sendmail along with Mailx package may provide requsite MTA functionality.
+
+4- For Centos 7 or Fedora a known issue is "Package not available error". If you get this error then first install EPEL on your system, you may use following command to install EPEL before installing SSMTP:
+
+yum --enablerepo=extras install epel-release.
+
+
