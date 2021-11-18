@@ -104,7 +104,11 @@ read_input_file(){
 #                                                                            #
 #----------------------------------------------------------------------------#
 check_expiring_date_for_certificates() {    
-    expiration_string=$(echo | openssl s_client -servername $1 -connect $1:443 2>/dev/null | openssl x509 -noout -enddate | cut -f2 -d=)
+    expiration_string=$(echo | openssl s_client -servername $1 -connect $1:443 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -f2 -d=)
+    if [ -z "$expiration_string" ]; then
+        echo "Check of certificate for $1 failed" | systemd-cat -t "certificate-monitor" -p warning
+        return
+    fi
     expiration_date=$(date -d "$expiration_string" +%s)
     days_left="$(calculate_days_left)"
     if [ $days_left -ge $DAYS ]; then
