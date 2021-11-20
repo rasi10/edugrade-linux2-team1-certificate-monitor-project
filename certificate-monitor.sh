@@ -32,6 +32,19 @@ unset INPUT_FILE
 unset DAYS
 unset TARGET_GROUP
 
+#option to do quick search on single domain or collection of domains in textfile#
+echo "For quick ssl check on single domain enter 1"
+echo "For ssl check on multiple domains enter 2"
+read OPTION
+if [[ $OPTION -eq 1 ]]
+then 
+
+echo "Enter a valid domain name to check SSL Expiry"
+read DOM
+PORT="443"
+echo | openssl s_client -servername $DOM -connect $DOM:$PORT \
+	| openssl x509 -noout -dates | grep notAfter
+else
 
 #----------------------------------------------------------------------------#
 #      normal_usage()                                                        #
@@ -171,3 +184,4 @@ read_input_file
 send_email_to_target_group "$email_body"
 # Exiting the program
 exit $E_NORMERROR
+fi
