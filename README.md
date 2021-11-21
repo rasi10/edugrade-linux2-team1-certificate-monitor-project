@@ -47,7 +47,12 @@ ______________
 
 ```
 
-### Making the script executable & mandatory flags:
+In the file *certificate-monitor.sh* edit value of the string constant *DISCORD_WEBHOOK_URL* by adding your discord webhook. The line of code looks like this right now:
+```
+DISCORD_WEBHOOK_URL="" #YOU NEED TO ADD YOUR DISCORD WEBHOOK URL IN HERE!!
+```
+
+### _Making the script executable & mandatory flags_
 
 ```sh
 chmod 770 certificate-monitor.sh
@@ -64,9 +69,6 @@ Getting help:
 sh certificate-monitor -h
 ```
 
-## How to run the project with docker:
-```
-// TO DO
-```
+### _Reading the log files_
 
 v1 - _November 3rd, 2021_
