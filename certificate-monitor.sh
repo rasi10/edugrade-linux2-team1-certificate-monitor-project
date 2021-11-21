@@ -26,6 +26,7 @@ TODAY=$(date +%s)
 NEW_LINE=$'\n'
 EMAIL_SENDER="CERTIFICATE-ALERT"
 EMAIL_SUBJECT="Certificate alert"
+DISCORD_WEBHOOK_URL="" #YOU NEED TO ADD YOUR DISCORD WEBHOOK URL IN HERE!!
 
 email_body=""
 unset INPUT_FILE
@@ -141,6 +142,17 @@ send_email_to_target_group() {
 }
 
 #----------------------------------------------------------------------------#
+#      send_email_to_target_group()                                          #
+#                                                                            #
+#      TO DO -> ADD COMMENTS LATER                                           #
+#                                                                            #
+#----------------------------------------------------------------------------#
+send_message_to_discord() {   
+    echo "Sending report message to discord channel..."       
+    curl -X POST --data-urlencode "content=$1" $DISCORD_WEBHOOK_URL
+}
+
+#----------------------------------------------------------------------------#
 #      MAIN - In here we invoke the defined methods in a logical order       #
 #----------------------------------------------------------------------------#
 
@@ -169,5 +181,7 @@ done
 read_input_file
 # Invoking the method to send the email with the result
 send_email_to_target_group "$email_body"
+# Invoking the method to send the message to discord
+send_message_to_discord "$email_body"
 # Exiting the program
 exit $E_NORMERROR
