@@ -37,7 +37,12 @@ unset TARGET_GROUP
 #----------------------------------------------------------------------------#
 #      normal_usage()                                                        #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Prints a help message in the terminal that presents how the script's  #
+#      is used and in which order the flags are to be placed.                #
+#                                                                            #
+#      RETURN:                                                               #
+#         Only exits successfully (0).                                       #
+#                                                                            #
 #                                                                            #
 #----------------------------------------------------------------------------#
 normal_usage() {
@@ -53,10 +58,10 @@ normal_usage() {
 #----------------------------------------------------------------------------#
 #      wrong_parameters()                                                    #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Prints a message in the termanl that informs the user of wrongful     #
+#      flag placement(s).                                                    #
 #                                                                            #
 #----------------------------------------------------------------------------#
-
 wrong_parameters() {
     echo "Invalid flag(s)/parameter(s)!"
     echo ""
@@ -66,7 +71,12 @@ wrong_parameters() {
 #----------------------------------------------------------------------------#
 #      help_message()                                                        #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Prints a help message in the terminal that presents how the script's  #
+#      is used and in which order the flags are to be placed. In addition,   #
+#      it also shows a few examples of running the script.                   #
+#                                                                            #
+#      RETURN:                                                               #
+#         Only exits successfully (0).                                       #
 #                                                                            #
 #----------------------------------------------------------------------------#
 help_message() {    
@@ -88,7 +98,7 @@ help_message() {
 #----------------------------------------------------------------------------#
 #      read_input_file()                                                     #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Loops through each URL entry in the site-list.txt file.               #
 #                                                                            #
 #----------------------------------------------------------------------------#
 read_input_file(){
@@ -101,7 +111,13 @@ read_input_file(){
 #----------------------------------------------------------------------------#
 #      check_expiring_date_for_certificates()                                #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Checks the expiration date of a given url.                            #
+#                                                                            #
+#      PARAMETERS:                                                           #
+#         $1: A URL string.                                                   #
+#      RETURN:                                                               #
+#         Exits with 0 if successful, otherwise exits unsuccessfully with a  #
+#         non-zero value.                                                    #
 #                                                                            #
 #----------------------------------------------------------------------------#
 check_expiring_date_for_certificates() {    
@@ -122,7 +138,8 @@ check_expiring_date_for_certificates() {
 #----------------------------------------------------------------------------#
 #      calculate_days_left()                                                 #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Calculates the number of days left until the certificate of the URL   #
+#      under consideration expires.                                          #
 #                                                                            #
 #----------------------------------------------------------------------------#
 calculate_days_left(){    
@@ -133,7 +150,13 @@ calculate_days_left(){
 #----------------------------------------------------------------------------#
 #      send_email_to_target_group()                                          #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Sends an e-mail to the target group (or recipient).                   #
+#                                                                            #
+#      PARAMETERS:                                                           #
+#         $1 -- Body of the e-mail, which represents its primary message.    #
+#      RETURN:                                                               #
+#         Exits with 0 if successful, otherwise it exits unsuccessfully with #
+#         a non-zero value.                                                  #
 #                                                                            #
 #----------------------------------------------------------------------------#
 send_email_to_target_group() {
@@ -142,9 +165,9 @@ send_email_to_target_group() {
 }
 
 #----------------------------------------------------------------------------#
-#      send_email_to_target_group()                                          #
+#      send_message_to_discord()                                             #
 #                                                                            #
-#      TO DO -> ADD COMMENTS LATER                                           #
+#      Sends a message to Discord.                                           #
 #                                                                            #
 #----------------------------------------------------------------------------#
 send_message_to_discord() {   
